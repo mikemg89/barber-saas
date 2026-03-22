@@ -23,31 +23,36 @@ export default function ReservarPage() {
 
     // 2. Guardar la cita
     const handleBooking = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-    
-        // Combinamos fecha y hora para el formato TIMESTAMPTZ de la DB
-        const appointmentTime = `${date}T${time}:00Z`;
+    e.preventDefault();
+    setLoading(true);
+    setMessage(""); // Limpiamos mensajes previos
 
+    try {
+        // 1. DECLARAMOS la variable localDateTime (Asegúrate de que diga 'const')
+        const localDateTime = new Date(`${date}T${time}`);
+
+        // 2. LA USAMOS en el insert
         const { error } = await supabase.from("appointments").insert([
         {
             service_id: selectedService,
-            appointment_time: appointmentTime,
-            full_name_temp: clientName, // Usamos un campo temporal si el cliente no está logueado
+            appointment_time: localDateTime.toISOString(), // Aquí es donde se usa
+            full_name_temp: clientName,
             status: 'pendiente'
         }
         ]);
 
-        if (error) {
-            setMessage("❌ Error al agendar: " + error.message);
-        } else {
-            setMessage("✅ ¡Cita agendada con éxito! Te esperamos.");
-            setClientName("");
-            setSelectedService("");
-            setDate("");
-            setTime("");
-        }
+        if (error) throw error;
+
+        setMessage("✅ ¡Cita agendada con éxito!");
+        setClientName("");
+        setSelectedService("");
+        setDate("");
+        setTime("");
+    } catch (error: any) {
+        setMessage("❌ Error al agendar: " + error.message);
+    } finally {
         setLoading(false);
+    }
     };
 
     return (

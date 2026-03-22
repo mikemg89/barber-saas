@@ -92,7 +92,11 @@ export default function DashboardPage() {
                     <div className={`p-3 rounded-lg text-center min-w-[80px] ${appo.status === 'completada' ? 'bg-gray-200 text-gray-500' : 'bg-blue-100 text-blue-700'}`}>
                       <p className="text-xs uppercase font-bold">Hora</p>
                       <p className="text-lg font-bold">
-                        {new Date(appo.appointment_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(appo.appointment_time).toLocaleTimeString('es-ES', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true // Para que salga 2:00 PM en lugar de 14:00 si prefieres
+                        })}
                       </p>
                     </div>
                     <div>
