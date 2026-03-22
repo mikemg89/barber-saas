@@ -2,6 +2,7 @@
 
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -31,6 +32,13 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                 <p className="text-sm font-medium text-gray-500">Próximas Citas</p>
+                <Link 
+                    href="/dashboard/services"
+                    className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-blue-500 transition-all group"
+                    >
+                    <p className="text-sm font-medium text-gray-500">Configuración</p>
+                    <p className="text-2xl font-bold text-gray-900 group-hover:text-blue-600">Gestionar Servicios ⚙️</p>
+                </Link>
                 <p className="text-2xl font-bold text-blue-600">0</p>
             </div>
             </div>
