@@ -27,15 +27,28 @@ export default function ReservarPage() {
     setLoading(true);
     setMessage(""); // Limpiamos mensajes previos
 
+    // 1. Crear el objeto de fecha elegido por el usuario
+    const selectedDateTime = new Date(`${date}T${time}`);
+    
+    // 2. Obtener la fecha y hora exacta de "ahora"
+    const now = new Date();
+
+    // 3. VALIDACIÓN: ¿La fecha elegida es menor a "ahora"?
+    if (selectedDateTime < now) {
+        setMessage("❌ No puedes programar citas en el pasado. Elige una hora futura.");
+        setLoading(false);
+        return; // Detenemos la ejecución aquí
+    }
+
     try {
         // 1. DECLARAMOS la variable localDateTime (Asegúrate de que diga 'const')
-        const localDateTime = new Date(`${date}T${time}`);
+        //const localDateTime = new Date(`${date}T${time}`);
 
         // 2. LA USAMOS en el insert
         const { error } = await supabase.from("appointments").insert([
         {
             service_id: selectedService,
-            appointment_time: localDateTime.toISOString(), // Aquí es donde se usa
+            appointment_time: selectedDateTime.toISOString(), // Aquí es donde se usa
             full_name_temp: clientName,
             status: 'pendiente'
         }
@@ -55,6 +68,8 @@ export default function ReservarPage() {
     }
     };
 
+    const today = new Date().toISOString().split('T')[0];
+    
     return (
         <main className="min-h-screen bg-white p-6 flex items-center justify-center">
         <div className="max-w-md w-full border border-gray-200 rounded-2xl p-8 shadow-sm">
@@ -96,6 +111,7 @@ export default function ReservarPage() {
                 <input
                     type="date"
                     required
+                    min={today} // Esto bloquea los días anteriores en el calendario
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900"
